@@ -68,7 +68,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
 
     private static final long serialVersionUID = -5864351140409987595L;
 
-    private static final Protocol refprotocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
+    private static final Protocol refprotocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension(); // @Chamber todo ReferenceConfig: 加载扩展？
 
     private static final Cluster cluster = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
 
@@ -381,10 +381,10 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                     }
                 }
             } else { // assemble URL from register center's configuration
-                List<URL> us = loadRegistries(false);
+                List<URL> us = loadRegistries(false); // @Chamber todo ReferenceConfig: 构建注册中心URL对象
                 if (us != null && !us.isEmpty()) {
                     for (URL u : us) {
-                        URL monitorUrl = loadMonitor(u);
+                        URL monitorUrl = loadMonitor(u); // @Chamber todo ReferenceConfig: 构建观测统计URL对象
                         if (monitorUrl != null) {
                             map.put(Constants.MONITOR_KEY, URL.encode(monitorUrl.toFullString()));
                         }
@@ -396,8 +396,8 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 }
             }
 
-            if (urls.size() == 1) {
-                invoker = refprotocol.refer(interfaceClass, urls.get(0));
+            if (urls.size() == 1) { // @Chamber todo ReferenceConfig: 单注册中心 OR 多注册中心
+                invoker = refprotocol.refer(interfaceClass, urls.get(0)); // @Chamber todo ReferenceConfig: com.alibaba.dubbo.rpc.Protocol.refer 引用远程服务
             } else {
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();
                 URL registryURL = null;
@@ -440,7 +440,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             logger.info("Refer dubbo service " + interfaceClass.getName() + " from url " + invoker.getUrl());
         }
         // create service proxy
-        return (T) proxyFactory.getProxy(invoker);
+        return (T) proxyFactory.getProxy(invoker); // @Chamber todo ReferenceConfig： 创建远程服务Proxy
     }
 
     private void checkDefault() {

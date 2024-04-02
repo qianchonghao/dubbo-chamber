@@ -178,7 +178,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                     map.put("path", RegistryService.class.getName());
                     map.put("dubbo", Version.getProtocolVersion());
                     map.put(Constants.TIMESTAMP_KEY, String.valueOf(System.currentTimeMillis()));
-                    if (ConfigUtils.getPid() > 0) {
+                    if (ConfigUtils.getPid() > 0) { // @Chamber todo: 当前JVM的pid
                         map.put(Constants.PID_KEY, String.valueOf(ConfigUtils.getPid()));
                     }
                     if (!map.containsKey("protocol")) {

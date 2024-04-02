@@ -308,9 +308,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                 throw new IllegalStateException("The stub implementation class " + stubClass.getName() + " not implement interface " + interfaceName);
             }
         }
-        checkApplication();
-        checkRegistry();
-        checkProtocol();
+        checkApplication(); // @Chamber todo: 读取dubbo.properties文件，初始化ApplicationConfig
+        checkRegistry();    // @Chamber todo: 读取dubbo.properties文件，增强RegistryConfig
+        checkProtocol();    // @Chamber todo: 读取dubbo.properties文件，增强ProtocolConfig
         appendProperties(this);
         checkStub(interfaceClass);
         checkMock(interfaceClass);
@@ -357,9 +357,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void doExportUrls() {
-        List<URL> registryURLs = loadRegistries(true);
+        List<URL> registryURLs = loadRegistries(true); // @Chamber todo: 根据ApplicationConfig,RegistryConfig 构建Registry的URL对象， registry://127.0.0.1:2181/com.alibaba.dubbo.registry.RegistryService?application=demo-provider&dubbo=2.0.2&pid=63505&qos.port=22222&registry=zookeeper&timestamp=1711974319726
         for (ProtocolConfig protocolConfig : protocols) {
-            doExportUrlsFor1Protocol(protocolConfig, registryURLs);
+            doExportUrlsFor1Protocol(protocolConfig, registryURLs); // @Chamber todo: 当前service 会在【Protocol * Registry】维度下暴露服务
         }
     }
 
@@ -376,7 +376,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (ConfigUtils.getPid() > 0) {
             map.put(Constants.PID_KEY, String.valueOf(ConfigUtils.getPid()));
         }
-        appendParameters(map, application);
+        appendParameters(map, application); // ProviderConfig,ApplicationConfig,ModuleConfig
         appendParameters(map, module);
         appendParameters(map, provider, Constants.DEFAULT_KEY);
         appendParameters(map, protocolConfig);
@@ -446,7 +446,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                 map.put("revision", revision);
             }
 
-            String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
+            String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();// @Chamber todo: 避免重复反射，将反射所得信息缓存成wrapper对象
             if (methods.length == 0) {
                 logger.warn("NO method found in service interface " + interfaceClass.getName());
                 map.put(Constants.METHODS_KEY, Constants.ANY_VALUE);

@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DemoServiceImpl implements DemoService {
+    public Integer age;
+    public String name;
 
     @Override
     public String sayHello(String name) {

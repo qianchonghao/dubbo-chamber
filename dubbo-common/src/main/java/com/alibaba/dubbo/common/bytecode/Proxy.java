@@ -122,7 +122,7 @@ public abstract class Proxy {
                 }
 
                 if (value == PendingGenerationMarker) {
-                    try {
+                    try { // @Chamber todo proxy:  并发问题，仅允许一个线程构建Proxy
                         cache.wait();
                     } catch (InterruptedException e) {
                     }
@@ -136,7 +136,7 @@ public abstract class Proxy {
 
         long id = PROXY_CLASS_COUNTER.getAndIncrement();
         String pkg = null;
-        ClassGenerator ccp = null, ccm = null;
+        ClassGenerator ccp = null, ccm = null;// // @Chamber todo proxy: ClassGenerator 存储 Class,Method信息
         try {
             ccp = ClassGenerator.newInstance(cl);
 
@@ -172,7 +172,7 @@ public abstract class Proxy {
                     if (!Void.TYPE.equals(rt))
                         code.append(" return ").append(asArgument(rt, "ret")).append(";");
 
-                    methods.add(method);
+                    methods.add(method);// @Chamber todo proxy: 添加方法名、访问控制符、参数列表、方法代码等信息到 ClassGenerator 中
                     ccp.addMethod(method.getName(), method.getModifiers(), rt, pts, method.getExceptionTypes(), code.toString());
                 }
             }

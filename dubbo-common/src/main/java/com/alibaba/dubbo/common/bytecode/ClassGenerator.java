@@ -254,7 +254,7 @@ public final class ClassGenerator {
     public Class<?> toClass() {
         return toClass(ClassHelper.getClassLoader(ClassGenerator.class), getClass().getProtectionDomain());
     }
-
+    // @Chamber todo proxy : 目的是 构建代理Class
     public Class<?> toClass(ClassLoader loader, ProtectionDomain pd) {
         if (mCtc != null)
             mCtc.detach();
@@ -264,7 +264,7 @@ public final class ClassGenerator {
             if (mClassName == null)
                 mClassName = (mSuperClass == null || javassist.Modifier.isPublic(ctcs.getModifiers())
                         ? ClassGenerator.class.getName() : mSuperClass + "$sc") + id;
-            mCtc = mPool.makeClass(mClassName);
+            mCtc = mPool.makeClass(mClassName);// @Chamber todo proxy: 反射构建Class
             if (mSuperClass != null)
                 mCtc.setSuperclass(ctcs);
             mCtc.addInterface(mPool.get(DC.class.getName())); // add dynamic class tag.

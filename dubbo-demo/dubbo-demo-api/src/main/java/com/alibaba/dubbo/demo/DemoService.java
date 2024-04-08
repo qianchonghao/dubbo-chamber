@@ -17,7 +17,8 @@
 package com.alibaba.dubbo.demo;
 
 public interface DemoService {
-
+    public Integer age = null;
+    public String name = null;
     String sayHello(String name);
 
 }

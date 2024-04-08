@@ -28,6 +28,7 @@ import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 import com.alibaba.dubbo.config.spring.extension.SpringExtensionFactory;
 
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -54,11 +55,14 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware,
         ApplicationEventPublisherAware {
 
+    public static ApplicationContext getApplicationContext(){
+        return applicationContext;
+    }
     private static final long serialVersionUID = 213195494150089726L;
 
     private final transient Service service;
 
-    private transient ApplicationContext applicationContext;
+    private static transient ApplicationContext applicationContext;
 
     private transient String beanName;
 

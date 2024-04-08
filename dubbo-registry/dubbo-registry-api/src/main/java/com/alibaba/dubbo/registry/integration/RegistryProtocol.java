@@ -162,10 +162,15 @@ public class RegistryProtocol implements Protocol {
 
     @SuppressWarnings("unchecked")
     private <T> ExporterChangeableWrapper<T> doLocalExport(final Invoker<T> originInvoker) {
+        // @Chamber todo: 获取ProviderURL，用作缓存key。com.alibaba.dubbo.registry.integration.RegistryProtocol.getProviderUrl
+        // 实例：dubbo://10.176.234.123:20880/com.alibaba.dubbo.demo.DemoService?anyhost=true&application=demo-provider&bean.name=com.alibaba.dubbo.demo.DemoService&bind.ip=10.176.234.123&bind.port=20880&dubbo=2.0.2&generic=false&interface=com.alibaba.dubbo.demo.DemoService&methods=sayHello&pid=42280&qos.port=22222&side=provider&timestamp=1712564832417
         String key = getCacheKey(originInvoker);
         ExporterChangeableWrapper<T> exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
         if (exporter == null) {
             synchronized (bounds) {
+                // bounds 意义：解决重复导出服务，占用端口问题。 bounds <k,v> = <providerurl,exporter>
+                // To solve the problem of RMI repeated exposure port conflicts, the services that have been exposed are no longer exposed.
+                //providerurl <--> exporter
                 exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
                 if (exporter == null) {
                     final Invoker<?> invokerDelegete = new InvokerDelegete<T>(originInvoker, getProviderUrl(originInvoker));

@@ -133,16 +133,16 @@ public class RegistryProtocol implements Protocol {
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
         //export invoker
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker);
-
+        // @Chamber todo: 替换协议头 registry -> zooKeeper，获取注册中心 URL
         URL registryUrl = getRegistryUrl(originInvoker);
 
         //registry provider
-        final Registry registry = getRegistry(originInvoker);
+        final Registry registry = getRegistry(originInvoker);// @Chamber todo: 根据URL，和zkServer链接，建立zkClient实例。已经建链，则直接返回
         final URL registeredProviderUrl = getRegisteredProviderUrl(originInvoker);
 
         //to judge to delay publish whether or not
         boolean register = registeredProviderUrl.getParameter("register", true);
-
+        // @Chamber todo: 向ProviderConsumerRegTable 消费者和提供者注册表，注册提供者
         ProviderConsumerRegTable.registerProvider(originInvoker, registryUrl, registeredProviderUrl);
 
         if (register) {
@@ -168,13 +168,13 @@ public class RegistryProtocol implements Protocol {
         ExporterChangeableWrapper<T> exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
         if (exporter == null) {
             synchronized (bounds) {
-                // bounds 意义：解决重复导出服务，占用端口问题。 bounds <k,v> = <providerurl,exporter>
+                // bounds 意义：解决重复导出服务，占用端口问题。 bounds <k,v> = <providerURL,exporter>
                 // To solve the problem of RMI repeated exposure port conflicts, the services that have been exposed are no longer exposed.
                 //providerurl <--> exporter
                 exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
                 if (exporter == null) {
                     final Invoker<?> invokerDelegete = new InvokerDelegete<T>(originInvoker, getProviderUrl(originInvoker));
-                    exporter = new ExporterChangeableWrapper<T>((Exporter<T>) protocol.export(invokerDelegete), originInvoker);
+                    exporter = new ExporterChangeableWrapper<T>((Exporter<T>) protocol.export(invokerDelegete), originInvoker);// @Chamber todo: 导出服务
                     bounds.put(key, exporter);
                 }
             }

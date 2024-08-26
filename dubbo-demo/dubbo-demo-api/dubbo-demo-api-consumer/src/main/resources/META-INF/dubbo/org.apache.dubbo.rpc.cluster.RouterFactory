@@ -1,0 +1,1 @@
+orderRouterFactory=org.apache.dubbo.demo.consumer.router.OrderRouterFactory
